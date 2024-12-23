@@ -10,12 +10,13 @@ public class Admin {
         boolean isAdminRunning = true;
 
         while (isAdminRunning) {
-            System.out.println("\n--- Admin Menu ---");
-            System.out.println("1. Add a new coworking space");
-            System.out.println("2. Remove a coworking space");
-            System.out.println("3. View all coworking spaces");
-            System.out.println("4. Exit to Main Menu");
-            System.out.print("Enter your choice: ");
+            System.out.println("""
+                --- Admin Menu ---
+                1. Add a new coworking space
+                2. Remove a coworking space
+                3. View all coworking spaces
+                4. Exit to Main Menu
+                Enter your choice:""");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // for new line
@@ -39,7 +40,7 @@ public class Admin {
         }
     }
 
-    private static void addWorkspace(Scanner scanner) {
+    private void addWorkspace(Scanner scanner) {
         System.out.print("Enter Workspace ID: ");
         int id = scanner.nextInt();
         scanner.nextLine(); // for new line
@@ -58,7 +59,7 @@ public class Admin {
         System.out.println("Workspace added successfully.");
     }
 
-    private static void removeWorkspace(Scanner scanner) {
+    private void removeWorkspace(Scanner scanner) {
         System.out.print("Enter Workspace ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
@@ -71,7 +72,7 @@ public class Admin {
 
     }
 
-    private static void viewWorkspace(Scanner scanner) {
+    private void viewWorkspace(Scanner scanner) {
         System.out.println("\n--- List of Workspaces ---");
         if (workspaceList.isEmpty())
             System.out.println("No Workspace available");
@@ -82,7 +83,7 @@ public class Admin {
         }
     }
 
-    public static List<Workspace> getWorkspaceList() {
+    public List<Workspace> getWorkspaceList() {
         return workspaceList;
     }
 }

@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Client {
     private static List<Reservation> reservationList = new ArrayList<>();
     private static int reservationCounter = 1;
+    Admin admin = new Admin();
 
 
     public void menu() {
@@ -12,13 +13,14 @@ public class Client {
         boolean isClientRunning = true;
 
         while (isClientRunning) {
-            System.out.println("\n--- Client Menu ---");
-            System.out.println("1. Browse available spaces");
-            System.out.println("2. Make a reservation");
-            System.out.println("3. View my reservations");
-            System.out.println("4. Cancel a reservation");
-            System.out.println("5. Exit to Main Menu.");
-            System.out.print("Enter your choice: ");
+            System.out.println("""
+                --- Client Menu ---
+                1. Browse available spaces"
+                2. Make a reservation
+                3. View my reservations
+                4. Cancel a reservation
+                5. Exit to Main Menu.
+                Enter your choice:""");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
@@ -47,7 +49,7 @@ public class Client {
     private void browseSpaces() {
         System.out.println("\n--- Available Workspaces ---");
         boolean found = false;
-        for (Workspace workspace : Admin.getWorkspaceList()) {
+        for (Workspace workspace : admin.getWorkspaceList()) {
             if (workspace.isAvailable()) {
                 System.out.println(workspace);
                 found = true;
@@ -63,7 +65,7 @@ public class Client {
         int workspaceId = scanner.nextInt();
         scanner.nextLine();
 
-        Workspace workspace = Admin.getWorkspaceList().stream()
+        Workspace workspace = admin.getWorkspaceList().stream()
                 .filter(w -> w.getId() == workspaceId && w.isAvailable())
                 .findFirst()
                 .orElse(null);
@@ -88,7 +90,7 @@ public class Client {
         Reservation reservation = new Reservation(reservationCounter++, workspaceId, name, date, startTime, endTime);
         reservationList.add(reservation);
 
-        workspace.setAvaliable(false);
+        workspace.setAvailable(false);
         System.out.println("Reservation successfull! Your Reservation ID is " + reservation.getReservationId());
     }
 
@@ -119,13 +121,13 @@ public class Client {
 
         reservationList.remove(reservation);
 
-        Workspace workspace = Admin.getWorkspaceList().stream()
+        Workspace workspace = admin.getWorkspaceList().stream()
                 .filter(w -> w.getId() == reservation.getWorkspaceId())
                 .findFirst()
                 .orElse(null);
 
         if(workspace != null) {
-            workspace.setAvaliable(true);
+            workspace.setAvailable(true);
         }
 
         System.out.println("Reservation canceled successfully");

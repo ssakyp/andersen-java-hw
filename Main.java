@@ -8,11 +8,12 @@ public class Main {
         Client client = new Client();
 
         while (running) {
-            System.out.println("Welcome to the Coworking Space Reservation App!");
-            System.out.println("1. Admin Login");
-            System.out.println("2. Client Login");
-            System.out.println("3. Exit");
-            System.out.println("Enter your choice: ");
+            System.out.println("""
+                Welcome to the Coworking Space Reservation App!
+                1. Admin Login
+                2. Client Login
+                3. Exit
+                Enter your choice:""");
 
             int choice = scanner.nextInt();
 
