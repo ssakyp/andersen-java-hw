@@ -1,14 +1,23 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Admin {
-    private static List<Workspace> workspaceList = new ArrayList<>();
+    private static List<Workspace> workspaceList;
+    private WorkspaceFileManager workspaceFileManager;
+
+    public Admin(WorkspaceFileManager workspaceFileManager) {
+        this.workspaceFileManager = workspaceFileManager;
+        this.workspaceList = workspaceFileManager.readWorkspaces();
+    }
+
+    public Admin(){};
 
     public void menu() {
         Scanner scanner = new Scanner(System.in);
         boolean isAdminRunning = true;
-
         while (isAdminRunning) {
             System.out.println("""
                 --- Admin Menu ---
@@ -26,7 +35,11 @@ public class Admin {
                     addWorkspace(scanner);
                     break;
                 case 2:
-                    removeWorkspace(scanner);
+                    try {
+                        removeWorkspace(scanner);
+                    } catch (WorkspaceNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 3:
                     viewWorkspace(scanner);
@@ -38,6 +51,7 @@ public class Admin {
                     System.out.println("Invalid choice. Try again.");
             }
         }
+        workspaceFileManager.writeWorkspaces(workspaceList);
     }
 
     private void addWorkspace(Scanner scanner) {
@@ -59,16 +73,16 @@ public class Admin {
         System.out.println("Workspace added successfully.");
     }
 
-    private void removeWorkspace(Scanner scanner) {
+    private void removeWorkspace(Scanner scanner) throws WorkspaceNotFoundException {
         System.out.print("Enter Workspace ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
 
         boolean removed = workspaceList.removeIf(workspace -> workspace.getId() == id);
-        if(removed)
-            System.out.println("Workspace removed successfully.");
-        else
-            System.out.println("Workspace with ID " + id + " not found.");
+        if(!removed) {
+            throw new WorkspaceNotFoundException("Workspace with ID " + id + " not found.");
+        } else
+        System.out.println("Workspace removed successfully.");
 
     }
 

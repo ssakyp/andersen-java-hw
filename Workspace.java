@@ -16,6 +16,14 @@ public class Workspace {
     public int getId() { return id; }
     public boolean isAvailable() { return isAvailable; }
 
+    public String getType() {
+        return type;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
     public void setAvailable(boolean available) { isAvailable = available; }
 
     @Override

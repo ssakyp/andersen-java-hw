@@ -4,7 +4,8 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
-        Admin admin = new Admin();
+        WorkspaceFileManager workspaceFileManager = new WorkspaceFileManager("workspaceState");
+        Admin admin = new Admin(workspaceFileManager);
         Client client = new Client();
 
         while (running) {
