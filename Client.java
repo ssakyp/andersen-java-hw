@@ -15,7 +15,7 @@ public class Client {
         while (isClientRunning) {
             System.out.println("""
                 --- Client Menu ---
-                1. Browse available spaces"
+                1. Browse available spaces
                 2. Make a reservation
                 3. View my reservations
                 4. Cancel a reservation
@@ -91,13 +91,13 @@ public class Client {
         reservationList.add(reservation);
 
         workspace.setAvailable(false);
-        System.out.println("Reservation successfull! Your Reservation ID is " + reservation.getReservationId());
+        System.out.println("Reservation successful! Your Reservation ID is " + reservation.getReservationId());
     }
 
     private void viewReservations(){
-        System.out.println("\n--- My Resrvations ---");
+        System.out.println("\n--- My Reservations ---");
         if (reservationList.isEmpty()) {
-            System.out.println("No reservatoins found.");
+            System.out.println("No reservations found.");
         } else {
             for (Reservation reservation : reservationList) {
                 System.out.println(reservation);
