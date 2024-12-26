@@ -1,12 +1,24 @@
+import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        CustomClassLoader customClassLoader = new CustomClassLoader();
+
+        try {
+            Class<?> dynamicClass = customClassLoader.loadClass("Admin");
+
+           System.out.println("Class loaded: " + dynamicClass.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
         WorkspaceFileManager workspaceFileManager = new WorkspaceFileManager("workspaceState");
         Admin admin = new Admin(workspaceFileManager);
-        Client client = new Client();
+        Client client = new Client(admin);
 
         while (running) {
             System.out.println("""

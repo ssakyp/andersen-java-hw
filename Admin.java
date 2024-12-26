@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Admin {
-    private static List<Workspace> workspaceList;
+    private List<Workspace> workspaceList;
     private WorkspaceFileManager workspaceFileManager;
 
     public Admin(WorkspaceFileManager workspaceFileManager) {
         this.workspaceFileManager = workspaceFileManager;
         this.workspaceList = workspaceFileManager.readWorkspaces();
     }
-
-    public Admin(){};
 
     public void menu() {
         Scanner scanner = new Scanner(System.in);

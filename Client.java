@@ -5,8 +5,11 @@ import java.util.Scanner;
 public class Client {
     private static List<Reservation> reservationList = new ArrayList<>();
     private static int reservationCounter = 1;
-    Admin admin = new Admin();
+    private Admin admin;
 
+    public Client(Admin admin) {
+        this.admin = admin;
+    }
 
     public void menu() {
         Scanner scanner = new Scanner(System.in);
