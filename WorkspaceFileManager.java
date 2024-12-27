@@ -17,8 +17,8 @@ public class WorkspaceFileManager {
                 String[] fields = line.split(",");
                 int id = Integer.parseInt(fields[0]);
                 String type = fields[1];
-                double price = Double.parseDouble(fields[2]);
-                boolean isAvailable = Boolean.parseBoolean(fields[3]);
+                double price = Double.parseDouble(fields[2] + "." + fields[3]);
+                boolean isAvailable = Boolean.parseBoolean(fields[4]);
                 workspaceList.add(new Workspace(id, isAvailable, type, price));
             }
         } catch (IOException e) {
