@@ -1,16 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Admin {
-    private List<Workspace> workspaceList;
-    private WorkspaceFileManager workspaceFileManager;
+    private Set<Workspace> workspaceSet = new HashSet<>();
+    private final FileManager workspaceFileManager;
 
-    public Admin(WorkspaceFileManager workspaceFileManager) {
+    public Admin(FileManager workspaceFileManager) {
         this.workspaceFileManager = workspaceFileManager;
-        this.workspaceList = workspaceFileManager.readWorkspaces();
+        this.workspaceSet = new HashSet<>(workspaceFileManager.readItems(Workspace.class));
     }
 
     public void menu() {
@@ -40,7 +38,7 @@ public class Admin {
                     }
                     break;
                 case 3:
-                    viewWorkspace(scanner);
+                    viewWorkspace();
                     break;
                 case 4:
                     isAdminRunning = false;
@@ -49,13 +47,18 @@ public class Admin {
                     System.out.println("Invalid choice. Try again.");
             }
         }
-        workspaceFileManager.writeWorkspaces(workspaceList);
+        workspaceFileManager.writeItems(workspaceSet, Workspace.class);
     }
 
     private void addWorkspace(Scanner scanner) {
         System.out.print("Enter Workspace ID: ");
         int id = scanner.nextInt();
         scanner.nextLine(); // for new line
+
+        if (workspaceSet.stream().anyMatch(workspace -> workspace.getId() == id)) {
+            System.out.println("Workspace ID already exists. Please use a unique ID.");
+            return;
+        }
 
         System.out.print("Enter Workspace Type (Open Space, Private Room, etc.): ");
         String type = scanner.nextLine();
@@ -67,7 +70,7 @@ public class Admin {
         boolean isAvailable = scanner.nextBoolean();
 
         Workspace workspace = new Workspace(id, isAvailable, type, price);
-        workspaceList.add(workspace);
+        workspaceSet.add(workspace);
         System.out.println("Workspace added successfully.");
     }
 
@@ -76,26 +79,25 @@ public class Admin {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        boolean removed = workspaceList.removeIf(workspace -> workspace.getId() == id);
+        boolean removed = workspaceSet.removeIf(workspace -> workspace.getId() == id);
         if(!removed) {
             throw new WorkspaceNotFoundException("Workspace with ID " + id + " not found.");
-        } else
-        System.out.println("Workspace removed successfully.");
+        } else System.out.println("Workspace removed successfully.");
 
     }
 
-    private void viewWorkspace(Scanner scanner) {
+    private void viewWorkspace() {
         System.out.println("\n--- List of Workspaces ---");
-        if (workspaceList.isEmpty())
+        if (workspaceSet.isEmpty())
             System.out.println("No Workspace available");
         else {
-            for (Workspace workspace : workspaceList) {
+            for (Workspace workspace : workspaceSet) {
                 System.out.println(workspace);
             }
         }
     }
 
-    public List<Workspace> getWorkspaceList() {
-        return workspaceList;
+    public Set<Workspace> getWorkspaceList() {
+        return workspaceSet;
     }
 }

@@ -1,11 +1,9 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Client {
-    private static List<Reservation> reservationList = new ArrayList<>();
+    private static Map<Integer, Reservation> reservationMap = new HashMap<>();
     private static int reservationCounter = 1;
-    private Admin admin;
+    private final Admin admin;
 
     public Client(Admin admin) {
         this.admin = admin;
@@ -91,7 +89,7 @@ public class Client {
         String endTime = scanner.nextLine();
 
         Reservation reservation = new Reservation(reservationCounter++, workspaceId, name, date, startTime, endTime);
-        reservationList.add(reservation);
+        reservationMap.put(reservation.getReservationId(), reservation);
 
         workspace.setAvailable(false);
         System.out.println("Reservation successful! Your Reservation ID is " + reservation.getReservationId());
@@ -99,10 +97,10 @@ public class Client {
 
     private void viewReservations(){
         System.out.println("\n--- My Reservations ---");
-        if (reservationList.isEmpty()) {
+        if (reservationMap.isEmpty()) {
             System.out.println("No reservations found.");
         } else {
-            for (Reservation reservation : reservationList) {
+            for (Reservation reservation : reservationMap.values()) {
                 System.out.println(reservation);
             }
         }
@@ -112,17 +110,14 @@ public class Client {
         System.out.print("Enter Reservation ID to cancel: ");
         int reservationId = scanner.nextInt();
 
-        Reservation reservation = reservationList.stream()
-                .filter(r -> r.getReservationId() == reservationId)
-                .findFirst()
-                .orElse(null);
+        Reservation reservation = reservationMap.get(reservationId);
 
         if (reservation == null) {
             System.out.println("Reservation not found. ");
             return;
         }
 
-        reservationList.remove(reservation);
+        reservationMap.remove(reservationId);
 
         Workspace workspace = admin.getWorkspaceList().stream()
                 .filter(w -> w.getId() == reservation.getWorkspaceId())
