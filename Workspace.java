@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Workspace {
     private int id;
     private String type;
@@ -34,5 +36,18 @@ public class Workspace {
                 ", price=" + price +
                 ", isAvailable=" + isAvailable +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Workspace workspace = (Workspace) o;
+        return id ==workspace.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

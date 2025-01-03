@@ -16,7 +16,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
-        WorkspaceFileManager workspaceFileManager = new WorkspaceFileManager("workspaceState");
+        FileManager workspaceFileManager = new FileManager("workspaceState");
         Admin admin = new Admin(workspaceFileManager);
         Client client = new Client(admin);
 
