@@ -3,7 +3,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class FileManager {
-    private String filePath;
+    private final String filePath;
 
     public FileManager(String filePath) {this.filePath = filePath;}
 
@@ -22,7 +22,6 @@ public class FileManager {
                     boolean isAvailable = Boolean.parseBoolean(fields[4]);
                     itemSet.add(clazz.cast(new Workspace(id, isAvailable, type, price)));
                 }
-
             }
         } catch (IOException e) {
             System.out.println("Error while reading file");
@@ -33,7 +32,7 @@ public class FileManager {
     // writing to the file
     public <T> void writeItems(Set<T> itemSet, Class<T> itemType) {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath))){
-            for(T item : itemSet) {
+            itemSet.forEach(item -> {
                 if(itemType == Workspace.class) {
                     Workspace workspace = (Workspace) item;
                     String line = String.format("%d,%s,%.2f,%b",
@@ -41,10 +40,14 @@ public class FileManager {
                             workspace.getType(),
                             workspace.getPrice(),
                             workspace.isAvailable());
-                    bufferedWriter.write(line);
-                    bufferedWriter.newLine();
+                    try {
+                        bufferedWriter.write(line);
+                        bufferedWriter.newLine();
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
                 }
-            }
+            });
             System.out.println("Successfully saved workspaces");
         } catch (IOException e) {
             System.out.println("Error while saving workspaces " + e.getMessage());
