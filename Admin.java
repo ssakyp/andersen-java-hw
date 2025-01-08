@@ -13,31 +13,26 @@ public class Admin {
 
     public void menu() {
         Scanner scanner = new Scanner(System.in);
-        final boolean[] isAdminRunning = {true};
+        boolean isAdminRunning = true;
 
-        Map<Integer, Runnable> menuActions = new HashMap<>();
-        menuActions.put(1, () -> addWorkspace(scanner));
-        menuActions.put(2, () -> {
-            try {
-                removeWorkspace(scanner);
-            } catch (WorkspaceNotFoundException e) {
-                System.out.println(e.getMessage());
-            }
-        });
-        menuActions.put(3, this::viewWorkspaces);
-        menuActions.put(4, this::markAllWorkspacesAvailable);
-        menuActions.put(5, () -> isAdminRunning[0] = false);
-
-        while (isAdminRunning[0]) {
+        while(isAdminRunning) {
             displayMenu();
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            Runnable action = menuActions.get(choice);
-            if (action != null) {
-                action.run();
-            } else {
-                System.out.println("Invalid choice. Try again.");
+            switch(choice) {
+                case 1 -> addWorkspace(scanner);
+                case 2 -> {
+                    try {
+                        removeWorkspace(scanner);
+                    } catch (WorkspaceNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                case 3 -> viewWorkspaces();
+                case 4 -> markAllWorkspacesAvailable();
+                case 5 -> isAdminRunning = false;
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
 
