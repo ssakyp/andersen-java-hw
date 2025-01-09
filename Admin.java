@@ -14,40 +14,40 @@ public class Admin {
     public void menu() {
         Scanner scanner = new Scanner(System.in);
         boolean isAdminRunning = true;
-        while (isAdminRunning) {
-            System.out.println("""
-                --- Admin Menu ---
-                1. Add a new coworking space
-                2. Remove a coworking space
-                3. View all coworking spaces
-                4. Exit to Main Menu
-                Enter your choice:""");
 
+        while(isAdminRunning) {
+            displayMenu();
             int choice = scanner.nextInt();
-            scanner.nextLine(); // for new line
+            scanner.nextLine();
 
-            switch (choice) {
-                case 1:
-                    addWorkspace(scanner);
-                    break;
-                case 2:
+            switch(choice) {
+                case 1 -> addWorkspace(scanner);
+                case 2 -> {
                     try {
                         removeWorkspace(scanner);
                     } catch (WorkspaceNotFoundException e) {
                         System.out.println(e.getMessage());
                     }
-                    break;
-                case 3:
-                    viewWorkspace();
-                    break;
-                case 4:
-                    isAdminRunning = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                }
+                case 3 -> viewWorkspaces();
+                case 4 -> markAllWorkspacesAvailable();
+                case 5 -> isAdminRunning = false;
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
+
         workspaceFileManager.writeItems(workspaceSet, Workspace.class);
+    }
+
+    private void displayMenu(){
+        System.out.println("""
+                --- Admin Menu ---
+                1. Add a new coworking space
+                2. Remove a coworking space
+                3. View all coworking spaces
+                4. Mark all coworking spaces available
+                5. Exit to Main Menu
+                Enter your choice:""");
     }
 
     private void addWorkspace(Scanner scanner) {
@@ -79,14 +79,22 @@ public class Admin {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        boolean removed = workspaceSet.removeIf(workspace -> workspace.getId() == id);
-        if(!removed) {
-            throw new WorkspaceNotFoundException("Workspace with ID " + id + " not found.");
-        } else System.out.println("Workspace removed successfully.");
+        try {
+            Optional<Workspace> workspaceOptional = workspaceSet.stream()
+                    .filter(workspace -> workspace.getId() == id)
+                    .findFirst();
+
+                    Workspace workspace = workspaceOptional.orElseThrow(() ->
+                        new WorkspaceNotFoundException("Workspace with ID " + id + " not found."));
+                    workspaceSet.remove(workspace);
+                    System.out.println("Workspace removed successfully.");
+                    } catch (WorkspaceNotFoundException e) {
+                         System.out.println(e.getMessage());;
+                    }
 
     }
 
-    private void viewWorkspace() {
+    private void viewWorkspaces() {
         System.out.println("\n--- List of Workspaces ---");
         if (workspaceSet.isEmpty())
             System.out.println("No Workspace available");
@@ -99,5 +107,9 @@ public class Admin {
 
     public Set<Workspace> getWorkspaceList() {
         return workspaceSet;
+    }
+
+    private void markAllWorkspacesAvailable() {
+        workspaceSet.forEach(workspace -> workspace.setAvailable(true));
     }
 }
