@@ -1,4 +1,11 @@
-import java.util.*;
+package com.andersen.coworking.roles;
+
+import com.andersen.coworking.models.Reservation;
+import com.andersen.coworking.models.Workspace;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Client {
     private static Map<Integer, Reservation> reservationMap = new HashMap<>();
@@ -14,7 +21,23 @@ public class Client {
         boolean isClientRunning = true;
 
         while (isClientRunning) {
-            System.out.println("""
+            displayMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> browseAvailableSpaces();
+                case 2 -> makeReservation(scanner);
+                case 3 -> viewReservations();
+                case 4 -> cancelReservation(scanner);
+                case 5 -> isClientRunning = false;
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    public void displayMenu() {
+        System.out.println("""
                 --- Client Menu ---
                 1. Browse available spaces
                 2. Make a reservation
@@ -22,43 +45,21 @@ public class Client {
                 4. Cancel a reservation
                 5. Exit to Main Menu.
                 Enter your choice:""");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (choice){
-                case 1:
-                    browseSpaces();
-                    break;
-                case 2:
-                    makeReservation(scanner);
-                    break;
-                case 3:
-                    viewReservations();
-                    break;
-                case 4:
-                    cancelReservation(scanner);
-                    break;
-                case 5:
-                    isClientRunning = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Try again.");
-            }
-        }
     }
 
-    private void browseSpaces() {
+    private void browseAvailableSpaces() {
         System.out.println("\n--- Available Workspaces ---");
         boolean found = false;
-        for (Workspace workspace : admin.getWorkspaceList()) {
+        for (Workspace workspace : admin.getWorkspaceSet()) {
             if (workspace.isAvailable()) {
-                System.out.println(workspace);
+                System.out.println(workspace.toString());
                 found = true;
             }
         }
 
-        if (!found)
-            System.out.println("No available workspaces at the moment.");
+        if (!found) {
+            System.out.println("No available workspaces at the moment");
+        }
     }
 
     private void makeReservation(Scanner scanner) {
@@ -66,7 +67,7 @@ public class Client {
         int workspaceId = scanner.nextInt();
         scanner.nextLine();
 
-        Workspace workspace = admin.getWorkspaceList().stream()
+        Workspace workspace = admin.getWorkspaceSet().stream()
                 .filter(w -> w.getId() == workspaceId && w.isAvailable())
                 .findFirst()
                 .orElse(null);
@@ -92,13 +93,13 @@ public class Client {
         reservationMap.put(reservation.getReservationId(), reservation);
 
         workspace.setAvailable(false);
-        System.out.println("Reservation successful! Your Reservation ID is " + reservation.getReservationId());
+        System.out.println("Reservation successful. Your Reservation ID: " + reservation.getReservationId());
     }
 
-    private void viewReservations(){
+    private void viewReservations() {
         System.out.println("\n--- My Reservations ---");
         if (reservationMap.isEmpty()) {
-            System.out.println("No reservations found.");
+            System.out.println("No reservation found.");
         } else {
             for (Reservation reservation : reservationMap.values()) {
                 System.out.println(reservation);
@@ -113,21 +114,21 @@ public class Client {
         Reservation reservation = reservationMap.get(reservationId);
 
         if (reservation == null) {
-            System.out.println("Reservation not found. ");
+            System.out.println("Reservation not found.");
             return;
         }
 
         reservationMap.remove(reservationId);
 
-        Workspace workspace = admin.getWorkspaceList().stream()
+        Workspace workspace = admin.getWorkspaceSet().stream()
                 .filter(w -> w.getId() == reservation.getWorkspaceId())
                 .findFirst()
                 .orElse(null);
 
-        if(workspace != null) {
+        if (workspace != null) {
             workspace.setAvailable(true);
         }
 
-        System.out.println("Reservation canceled successfully");
+        System.out.println("Reservation cancelled successfully.");
     }
 }
