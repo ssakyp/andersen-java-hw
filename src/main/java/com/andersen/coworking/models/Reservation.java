@@ -1,10 +1,12 @@
+package com.andersen.coworking.models;
+
 public class Reservation {
-    private int reservationId;
+    private final int reservationId;
     private int workspaceId;
-    private String customerName;
-    private String date;
-    private String startTime;
-    private String endTime;
+    private final String customerName;
+    private final String date;
+    private final String startTime;
+    private final String endTime;
 
     // Constructor
     public Reservation(int reservationId, int workspaceId, String customerName, String date, String startTime, String endTime) {
@@ -17,8 +19,12 @@ public class Reservation {
     }
 
     // Getters
-    public int getReservationId() { return reservationId; }
-    public int getWorkspaceId() { return workspaceId; }
+    public int getReservationId() {
+        return reservationId;
+    }
+    public int getWorkspaceId() {
+        return workspaceId;
+    }
 
     @Override
     public String toString() {
@@ -27,7 +33,7 @@ public class Reservation {
                 ", Workspace ID=" + workspaceId +
                 ", Customer Name='" + customerName + '\'' +
                 ", Date='" + date + '\'' +
-                ", Time='" + startTime + " - " + endTime + '\'' +
-                '}';
+                ", Time='" + startTime + " - " + endTime + '\''
+                + '}';
     }
 }
